@@ -20,7 +20,7 @@ $(function() {
     }).fail(function(){
       alert("Please submit again!")
     });
-    event.preventDefault(student);
+    event.preventDefault();
   };
 
   function saveStudent(student){
