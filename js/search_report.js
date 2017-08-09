@@ -12,9 +12,9 @@ $(function(){
         }
         rederTable(gradeReport);
       }).statusCode({
-        404: function() { alert( 'Unauthorized' ); },
-        500: function() { alert( 'Server Internal Error' ); },
-        201: function() { alert( 'OK!'); }
+        400: function() { console.log( 'gradeReport Input is wrong!' ); },
+        500: function() { console.log( 'gradeReport Server Internal Error' ); },
+        201: function() { console.log( 'gradeReport OK!'); }
       }).fail(function(msg){
         console.log("error:");
         console.log(msg.responseText);
@@ -22,16 +22,11 @@ $(function(){
   }
 
   function feachReportFunc(){
-    const dynamicData = [
-      {number:"007"},
-      {number: "008"}
-    ];
     return $.ajax({
       contentType: "application/json",
-      url: "http://localhost:8080/api/gradereports/",
+      url: "http://localhost:8080/api/defaultgradereports/",
       method: "POST",
-      dataType: 'json',
-      data: JSON.stringify(dynamicData)
+      dataType: 'json'
     });
   }
 

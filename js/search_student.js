@@ -17,11 +17,31 @@ $(function(){
   }
 
   function searchStudents(keyWords) {
-    const studentList =JSON.parse(localStorage.getItem("students"));
-    return studentList
-    .filter(stu => stu.name.includes(keyWords) || stu.id.includes(keyWords))
+    feachStudentsFunc(keyWords).done(function(students, status){
+      console.log(students);
+      console.log("status:" + status);
+      if (!students){
+        return;
+      }
+      rederTable(students);
+    }).statusCode({
+      400: function() { console.log( 'searchStudents Input is wrong!' ); },
+      500: function() { console.log( 'searchStudents Server Internal Error' ); },
+      201: function() { console.log( 'searchStudents OK!'); }
+    }).fail(function(msg){
+      console.log("error:");
+      console.log(msg.responseText);
+    });
   }
 
+  function feachStudentsFunc(keyWords){
+    return $.ajax({
+      contentType: "application/json",
+      url: "http://localhost:8080/api/students/" + keyWords,
+      method: "GET",
+      dataType: 'json'
+    });
+  }
   registerSearchEvent("idSearcher");
   registerSearchEvent("nameSearcher");
 
