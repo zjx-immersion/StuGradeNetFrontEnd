@@ -7,8 +7,27 @@ $(function(){
     // selectedStudent= selectedStu;
     selectedStudent = {number: number, name: name}
     $('#grade-modal-title').html(selectedStudent.name)
-    $('#myModal').modal('show')
-    console.log(number + name);
+    feachGradeFunc(selectedStudent.number).done(function(grade, status){
+      if (!grade){
+        return;
+      }
+      rederGradeForm(grade);
+      $('#myModal').modal('show')
+    }).statusCode({
+      400: function() { console.log( 'searchStudents Input is wrong!' ); },
+      500: function() { console.log( 'searchStudents Server Internal Error' ); },
+      201: function() { console.log( 'searchStudents OK!'); }
+    }).fail(function(msg){
+      console.log("error:");
+      console.log(msg.responseText);
+    });
+  }
+
+  function rederGradeForm(grade){
+    console.log(grade);
+    Object.keys(grade).forEach(function(key){
+      $(`#grade-form [name=${key}]`).val(grade[key]);
+    })
   }
 
   function reloadInitData(){
@@ -43,10 +62,19 @@ $(function(){
     });
   }
 
+  function feachGradeFunc(number){
+    return $.ajax({
+      contentType: "application/json",
+      url: `http://localhost:8080/api/students/${number}/grades`,
+      method: "GET",
+      dataType: 'json'
+    });
+  }
+
   function feachStudentsFunc(keyWords){
     return $.ajax({
       contentType: "application/json",
-      url: "http://localhost:8080/api/students/" + keyWords,
+      url: `http://localhost:8080/api/students/${keyWords}`,
       method: "GET",
       dataType: 'json'
     });
